@@ -11,14 +11,20 @@ eosio-cpp - Part of eosio.cdt, it compiles C++ code to WASM and can generate ABI
 
 # 1. DEVELOPMENT ENVIRONMENT
 
-## Start Your Node & Setup
-### Step 1: Get the docker image
+## 1.1 Start Your Node & Setup
+### 1.1.1 Get the docker image
 
+~~~
 docker pull eosio/eos:v1.4.0
+~~~
 
-### Step 2: Boot Node and Wallet
+### 1.1.2 Boot Node and Wallet
+
+~~~
 
 docker run --name eosio   --publish 8888:8888   --publish 127.0.0.1:5555:5555   --volume /c/Users/lencs/Desktop/Projets/Eosdemo/contracts:/contracts  --detach   eosio/eos   /bin/bash -c   "keosd --http-server-address=0.0.0.0:5555 & exec nodeos -e -p eosio --plugin eosio::producer_plugin --plugin eosio::chain_api_plugin --plugin eosio::history_plugin --plugin eosio::history_api_plugin --plugin eosio::http_plugin -d /mnt/dev/data --config-dir /mnt/dev/config --http-server-address=0.0.0.0:8888 --access-control-allow-origin=* --contracts-console --http-validate-host=false --filter-on='*'"
+~~~
+
 
 These settings accomplish the following:
 
@@ -27,57 +33,65 @@ Alias a work volume on your local drive to the docker container.
 Run the Nodeos startup in bash. This command loads all the basic plugins, set the server address, enable CORS and add some contract debugging.
 Enable CORS with no restrictions (*)
 
-### Step 3: Check the installation
+### 1.1.3 Check the installation
 
-#### Step 3.1: Check that Nodeos is Producing Blocks
+#### 1.1.3.1 Check that Nodeos is Producing Blocks
 
+~~~
 docker logs --tail 10 eosio
+~~~
 
-#### Step 3.2: Check the Wallet
+#### 1.1.3.2 Check the Wallet
 
+~~~
 docker exec -it eosio bash
 
-
 cleos --wallet-url http://127.0.0.1:5555 wallet list keys
+~~~
 
 Now that keosd is running correctly, type exit and then press enter to leave the keosd shell. From this point forward, you won't need to enter the containers with bash, and you'll be executing commands from your local system (Linux or Mac)
 
-#### Step 3.3: Check Nodeos endpoints
+#### 1.1.3.3 Check Nodeos endpoints
 
+~~~
 curl http://localhost:7777/v1/chain/get_info
+~~~
 
-### Step 4: Aliasing Cleos
+### 1.1.4 Aliasing Cleos
 
+
+~~~
 alias cleos='docker exec -it eosio /opt/eosio/bin/cleos --url http://127.0.0.1:8888 --wallet-url http://127.0.0.1:5555'
+~~~
 
-### Step 5: Take Note of Useful Docker Commands
+### 1.1.5 Take Note of Useful Docker Commands
 
-#### Start/Stop Container
 
+~~~
 docker start eosio
 docker stop eosio
-
-#### Bash
-
 docker exec -it eosio bash
+docker rm eosio
+~~~
 
-#### Remove the EOSIO Container
+## 1.2 Contract Development Toolkit
 
-    docker rm eosio
-
-## Contract Development Toolkit
-
+~~~
 git clone --recursive https://github.com/eosio/eosio.cdt --branch v1.3.2 --single-branch
 cd eosio.cdt
 
 wget https://github.com/eosio/eosio.cdt/releases/download/v1.3.2/eosio.cdt-1.3.2.x86_64.deb
 sudo apt install ./eosio.cdt-1.3.2.x86_64.deb
+~~~
 
-## Create Development Wallet
 
-### Step 1: Create a Wallet
+## 1.3 Create Development Wallet
 
+### 1.3.1 Create a Wallet
+
+~~~
 cleos wallet create --to-console
+~~~
 
     use --to-file so your wallet password is not in your bash history
 
@@ -88,23 +102,25 @@ cleos will return a password,
 
 PW5JQDkjiugXDxEttBQpmYUcv12UKgAN6FtkNNaD9A8jJbS5YcXDa
 
-### Step 2: Open the Wallet
+### 1.3.2 Open the Wallet
+
 
     cleos wallet open
 
-### Step 3: Unlock it
+
+### 1.3.3 Unlock it
 
     cleos wallet unlock
 PW5JQDkjiugXDxEttBQpmYUcv12UKgAN6FtkNNaD9A8jJbS5YcXDa
 
-### Step 4: Import keys into your wallet
+### 1.3.4 Import keys into your wallet
 
     cleos wallet create_key
 
 Created new private key with a public key of: "
 EOS6L6hTF9N83aekjpdfpkvBd19PhH2hhJjM8gYtouTM8fT8Q2oBA
 
-### Step 5: Import the Development Key
+### 1.3.5 Import the Development Key
 
 cleos wallet import
 
@@ -117,11 +133,14 @@ Wonderful, you now have a default wallet unlocked and loaded with a key, and are
 
 
 
-## Create Test Accounts
+## 1.4 Create Test Accounts
 
 在keys上建立新的账户
+
+~~~
 cleos create account eosio bob EOS6L6hTF9N83aekjpdfpkvBd19PhH2hhJjM8gYtouTM8fT8Q2oBA
 cleos create account eosio alice EOS6L6hTF9N83aekjpdfpkvBd19PhH2hhJjM8gYtouTM8fT8Q2oBA
+~~~
 
     executed transaction: 7b6408df6f7bad81915192d67deb61853217b7ad5d805ce326acee61ca1b9887  200 bytes  440 us
     #         eosio <= eosio::newaccount            {"creator":"eosio","name":"bob","owner":{"threshold":1,"keys":[ {"key":"EOS6L6hTF9N83aekjpdfpkvBd19Ph...
@@ -133,12 +152,13 @@ cleos create account eosio alice EOS6L6hTF9N83aekjpdfpkvBd19PhH2hhJjM8gYtouTM8fT
     Using Different Keys for Active/Owner on a PRODUCTION Network
 EOSIO has a unique authorization structure that has added security for you account. You can minimize the exposure of your account by keeping the owner key cold, while using the key associated with your active permission. This way, if your active key were every compromised, you could regain control over your account with your owner key.
 
+~~~
 nodeos --replay-blockchain --hard-replay-blockchain
+~~~
 
-## docker WSL
+## 1.5 docker WSL
 
-echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null
-
+~~~
 sudo apt-get remove docker docker-engine docker.io
 sudo apt-get update
 sudo apt-get install apt-transport-https
@@ -165,10 +185,14 @@ enabled = true
 root = /
 options = "metadata,umask=22,fmask=11"
 mountFsTab = false
+~~~
+
 
 # 2. SMART CONTRACT DEVELOPMENT
 
+~~~
 cd /c/Users/lencs/Desktop/Projets/Eosdemo/contracts
+~~~
 
 ## 2.1 Hello World!
 
