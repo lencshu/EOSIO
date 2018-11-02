@@ -408,7 +408,7 @@ cleos push action addressbook erase '["alice"]' -p alice@active
 ## 2.5 Adding Inline Actions
 how to construct actions, and send those actions from within a contract.
 
-### Step 1: Adding eosio.code to permissions
+### Adding eosio.code to permissions
 
 ~~~
 
