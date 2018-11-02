@@ -216,21 +216,25 @@ EOSIO_DISPATCH( hello, (hi))
 
 You can compile your code to web assembly (.wasm) as follows:
 
+~~~
 eosio-cpp -o hello.wasm hello.cpp --abigen
 
 cleos --wallet-url http://127.0.0.1:5555 wallet list keys
 
 
 cleos create account eosio hello EOS6L6hTF9N83aekjpdfpkvBd19PhH2hhJjM8gYtouTM8fT8Q2oBA -p eosio@active
+~~~
 
     root@4a180d42b1bd:/# cleos create account eosio hello EOS6L6hTF9N83aekjpdfpkvBd19PhH2hhJjM8gYtouTM8fT8Q2oBA -p  eosio@active
     executed transaction: 0e7f171b1a8d423b4b9f0fe14c1d998054a271f9689fa4528281105be334cff0  200 bytes  435 us
     #         eosio <= eosio::newaccount            {"creator":"eosio","name":"hello","owner":{"threshold":1,"keys":[   {"key":"EOS6UqHxpYp2K9o8qtXLPd62i7j...
     warning: transaction executed locally, but may not be confirmed by the network yet         ]
 
+~~~
 cd /contracts
 
 cleos set contract hello /contracts/hello -p hello@active
+~~~
 
     root@71b4a5b68a55:/contracts/hello# cleos set contract hello /contracts/hello -p hello@active
     Reading WASM from /contracts/hello/hello.wasm...
@@ -242,7 +246,9 @@ cleos set contract hello /contracts/hello -p hello@active
 
 Great! Now the contract is set, push an action to it.
 
+~~~
 cleos push action hello hi '["bob"]' -p bob@active
+~~~
 
     executed transaction:   25fd957b8992aff88a9834cb01a8641c5d9b9dfcd706eefe61b5e2dffbb6c17f      104 bytes  15608 us
     #         hello <= hello::hi                    {"user":"bob"}
@@ -258,16 +264,19 @@ eosio-cpp -o hello.wasm hello.cpp --abigen
 
 And then update it
 
+~~~
 docker exec -it eosio bash
 cd /contracts/hello
 cleos set contract hello /contracts/hello -p hello@active
 
 cleos push action hello hi '["bob"]' -p bob@active
+~~~
 
 
 ## 2.2Deploy, Issue and Transfer Tokens
 
 ### preparation
+~~~
 git clone https://github.com/EOSIO/eosio.contracts --branch v1.4.0 --single-branch
 
 cd eosio.contracts/eosio.token
@@ -277,6 +286,7 @@ cleos create account eosio eosio.token EOS6MRyAjQq8ud7hVNYcfnVPJqcVpscN5So8BhtHu
 eosio-cpp -I include -o eosio.token.wasm src/eosio.token.cpp --abigen
 
 cleos set contract eosio.token /contracts/eosio.contracts/eosio.token --abi eosio.token.abi -p eosio.token@active
+~~~
 
 ### Create the Token
 
@@ -284,8 +294,11 @@ To create a new token call the create(...) action with the proper arguments. Thi
 
 Below is the concise way to call this method, using positional arguments:
 
+~~~
 cleos push action eosio.token create '[ "eosio", "1000000000.0000 SYS"]' -p eosio.token@active
 cleos push action eosio.token create '{"issuer":"eosio", "maximum_supply":"1000000000.0000 SYS"}' -p eosio.token@active
+~~~
+
 
     executed transaction: 28c310ff4801ce5809cbd2b30c0c45b8ade4d341bf28ce36a321194470f038e5  120 bytes  440 us
     #   eosio.token <= eosio.token::create          {"issuer":"eosio","maximum_supply":"1000000000.0000 SYS"}
@@ -293,7 +306,9 @@ cleos push action eosio.token create '{"issuer":"eosio", "maximum_supply":"10000
 
 ### Issue Tokens
 
+~~~
 cleos push action eosio.token issue '[ "alice", "100.0000 SYS", "memo" ]' -p eosio@active
+~~~
 
 
     executed transaction: 5c24546282f990cd73326c76e3118f1fbb2a0c589894d55bc3a48a1a5c45bef3  128 bytes  1949 us
@@ -303,7 +318,9 @@ cleos push action eosio.token issue '[ "alice", "100.0000 SYS", "memo" ]' -p eos
     #         alice <= eosio.token::transfer        {"from":"eosio","to":"alice","quantity":"100.0000 SYS""memo":"memo"}
     warning: transaction executed locally, but may not be confirmed by the network yet         ]
 
+~~~
 cleos push action eosio.token issue '["alice", "100.0000 SYS", "memo"]' -p eosio@active -d -j
+~~~
 
 ~~~json
 {
@@ -354,8 +371,10 @@ The Application Binary Interface (ABI) is a JSON-based description on how to con
 
 ## 2.4 Data Persistence
 
+~~~
 mkdir addressbook
 cd addressbook
+~~~
 
 Write an Extended Standard Class and Include EOSIO
 
@@ -372,6 +391,7 @@ class [[eosio::contract]] addressbook : public eosio::contract {
 };
 ~~~
 
+~~~
 eosio-cpp -o addressbook.wasm adr.cpp --abigen
 cleos create account eosio addressbook EOS6L6hTF9N83aekjpdfpkvBd19PhH2hhJjM8gYtouTM8fT8Q2oBA
 
@@ -381,6 +401,7 @@ cleos push action addressbook upsert '["alice", "alice", "liddell", "123 drink m
 cleos push action addressbook upsert '["bob", "bob", "is a loser", "doesnt exist", "somewhere", "someplace"]' -p alice@active
 cleos get table addressbook addressbook people -k alice
 cleos push action addressbook erase '["alice"]' -p alice@active
+~~~
 
 
 
@@ -389,7 +410,10 @@ how to construct actions, and send those actions from within a contract.
 
 ### Step 1: Adding eosio.code to permissions
 
+~~~
+
 cleos set account permission addressbook active '{"threshold": 1,"keys": [{"key": "EOS6L6hTF9N83aekjpdfpkvBd19PhH2hhJjM8gYtouTM8fT8Q2oBA","weight": 1}], "accounts": [{"permission":{"actor":"addressbook","permission":"eosio.code"},"weight":1}]}' -p addressbook@owner
+~~~
 
 The eosio.code authority is a pseudo authority implemented to enhance security, and enable contracts to execute inline actions.
 
@@ -490,14 +514,18 @@ EOSIO_DISPATCH( addressbook, (upsert)(notify)(erase) )
 
 
 
+~~~
 cleos set contract addressbook /contracts/addressbook
 cleos push action addressbook upsert '["alice", "alice", "liddell", "123 drink me way", "wonderland", "amsterdam"]' -p alice@active
 cleos get actions alice
+~~~
 
 
 ## 2.6 Inline Action to External Contract
 
 The only new concept in the code above, is that we are explicitly restricting calls to the one action to a specific account in this contract using require_auth to the addressbook contract, as seen below.
+
+~~~
 
 //Only the addressbook account/contract can authorize this command. 
 require_auth( name("addressbook"));
@@ -523,6 +551,7 @@ cleos push action addressbook erase '["alice"]' -p alice@active
 cleos push action abcounter count '["alice", "erase"]' -p alice@active
 
 cleos get table abcounter abcounter counts -k alice
+~~~
 
 
 
