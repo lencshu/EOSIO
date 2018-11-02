@@ -272,12 +272,12 @@ cleos push action eosio.token create '{"issuer":"eosio", "maximum_supply":"10000
 cleos push action eosio.token issue '[ "alice", "100.0000 SYS", "memo" ]' -p eosio@active
 
 
-executed transaction: 5c24546282f990cd73326c76e3118f1fbb2a0c589894d55bc3a48a1a5c45bef3  128 bytes  1949 us
-#   eosio.token <= eosio.token::issue           {"to":"alice","quantity":"100.0000 SYS","memo":"memo"}
-#   eosio.token <= eosio.token::transfer        {"from":"eosio","to":"alice","quantity":"100.0000 SYS""memo":"memo"}
-#         eosio <= eosio.token::transfer        {"from":"eosio","to":"alice","quantity":"100.0000 SYS""memo":"memo"}
-#         alice <= eosio.token::transfer        {"from":"eosio","to":"alice","quantity":"100.0000 SYS""memo":"memo"}
-warning: transaction executed locally, but may not be confirmed by the network yet         ]
+    executed transaction: 5c24546282f990cd73326c76e3118f1fbb2a0c589894d55bc3a48a1a5c45bef3  128 bytes  1949 us
+    #   eosio.token <= eosio.token::issue           {"to":"alice","quantity":"100.0000 SYS","memo":"memo"}
+    #   eosio.token <= eosio.token::transfer        {"from":"eosio","to":"alice","quantity":"100.0000 SYS""memo":"memo"}
+    #         eosio <= eosio.token::transfer        {"from":"eosio","to":"alice","quantity":"100.0000 SYS""memo":"memo"}
+    #         alice <= eosio.token::transfer        {"from":"eosio","to":"alice","quantity":"100.0000 SYS""memo":"memo"}
+    warning: transaction executed locally, but may not be confirmed by the network yet         ]
 
 cleos push action eosio.token issue '["alice", "100.0000 SYS", "memo"]' -p eosio@active -d -j
 
@@ -313,11 +313,11 @@ cleos push action eosio.token issue '["alice", "100.0000 SYS", "memo"]' -p eosio
 
 cleos push action eosio.token transfer '[ "alice", "bob", "25.0000 SYS", "m" ]' -p alice@active
 
-executed transaction: f6021942631664381fa1dca747650da0f599d6169e2c84a247ee89f397002b38  128 bytes  1067 us
-#   eosio.token <= eosio.token::transfer        {"from":"alice","to":"bob","quantity":"25.0000 SYS","memo":"m"}
-#         alice <= eosio.token::transfer        {"from":"alice","to":"bob","quantity":"25.0000 SYS","memo":"m"}
-#           bob <= eosio.token::transfer        {"from":"alice","to":"bob","quantity":"25.0000 SYS","memo":"m"}
-warning: transaction executed locally, but may not be confirmed by the network yet         ]
+    executed transaction: f6021942631664381fa1dca747650da0f599d6169e2c84a247ee89f397002b38  128 bytes  1067 us
+    #   eosio.token <= eosio.token::transfer        {"from":"alice","to":"bob","quantity":"25.0000 SYS","memo":"m"}
+    #         alice <= eosio.token::transfer        {"from":"alice","to":"bob","quantity":"25.0000 SYS","memo":"m"}
+    #           bob <= eosio.token::transfer        {"from":"alice","to":"bob","quantity":"25.0000 SYS","memo":"m"}
+    warning: transaction executed locally, but may not be confirmed by the network yet         ]
 
 
 cleos get currency balance eosio.token alice SYS
